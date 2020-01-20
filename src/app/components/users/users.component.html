@@ -1,0 +1,129 @@
+<div class="col-md-12">
+    <div class="jumbotron">
+        <h1 class="display-4 text-center">App User Register
+            <li class="fa fa-users"></li>
+        </h1>
+    </div>
+    <div class="row float-right mb-2">
+        <button class="btn btn-primary" (click)="showFormModal(1, 0, content)"><i class="fa fa-user"></i> Add User</button>
+    </div>
+    <div class="row table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Full Name</th>
+                    <th class="text-center">Address</th>
+                    <th class="text-center">Country</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of userService.fromDataList">
+                    <td class="hover_pointer" title="View User" (click)="viewUserDetail(item.ID)">{{ item.FullName }}</td>
+                    <td>{{ item.Address }}</td>
+                    <td>{{ userService.ArrCountries | nameCountry: item.Country }}</td>
+                    <td>{{ item.Email }}</td>
+                    <td class="text-center">
+                        <button title="Edit User" type="button" class="btn btn-sm btn-info" (click)="showFormModal(2, item.ID, content)"><i class="fa fa-pencil"></i></button> |
+                        <button title="Delete User" (click)="deleteUser(item.ID)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+</div>
+
+<div class="col-12">
+    <ng-template #content let-modal>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ titleModal }}</h5>
+                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label>First Name</label>
+                            <input type="text" formControlName="FirstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.FirstName.errors }" />
+                            <div *ngIf="submitted && f.FirstName.errors" class="invalid-feedback">
+                                <div *ngIf="f.FirstName.errors.required">First Name is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Last Name</label>
+                            <input type="text" formControlName="LastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.LastName.errors }" />
+                            <div *ngIf="submitted && f.LastName.errors" class="invalid-feedback">
+                                <div *ngIf="f.LastName.errors.required">Last Name is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" formControlName="Address" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Address.errors }" />
+                        <div *ngIf="submitted && f.Address.errors" class="invalid-feedback">
+                            <div *ngIf="f.Address.errors.required">Address is required</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label>Country</label>
+                            <select formControlName="Country" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Country.errors }">
+                            <option value=""></option>
+                            <option [value]="country.alpha2Code" *ngFor="let country of userService.ArrCountries">{{ country.name }}</option>
+                        </select>
+                            <div *ngIf="submitted && f.Country.errors" class="invalid-feedback">
+                                <div *ngIf="f.Country.errors.required">Country is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>State</label>
+                            <input type="text" formControlName="State" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.State.errors }" />
+                            <div *ngIf="submitted && f.State.errors" class="invalid-feedback">
+                                <div *ngIf="f.State.errors.required">State is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label>Email</label>
+                            <input type="text" formControlName="Email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Email.errors }" />
+                            <div *ngIf="submitted && f.Email.errors" class="invalid-feedback">
+                                <div *ngIf="f.Email.errors.required">Email is required</div>
+                                <div *ngIf="f.Email.errors.email">Email must be a valid email address</div>
+                            </div>
+                        </div>
+                        <div class="form-row col-6">
+                            <div class="form-group col">
+                                <label>Password</label>
+                                <input type="password" formControlName="Password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Password.errors }" />
+                                <div *ngIf="submitted && f.Password.errors" class="invalid-feedback">
+                                    <div *ngIf="f.Password.errors.required">Password is required</div>
+                                    <div *ngIf="f.Password.errors.minlength">Password must be at least 6 characters</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary mr-1">{{ titleButton }}</button>
+                    <button class="btn btn-secondary" type="reset" (click)="closeModal()">Cancel</button>
+
+                </div>
+                <input type="hidden" formControlName="ID" />
+            </form>
+        </div>
+    </ng-template>
+    <!--</div>-->
+</div>
