@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ListUsers} from '../models/list-users.model';
 
 
@@ -16,7 +16,7 @@ import { User } from '../models/user.model';
 export class UsersService {
 
   readonly rootURL = 'https://localhost:44358/api';
-  fromDataList: ListUsers[];
+  
   fromDataUser: DetailUser;
   fromCountriesList: any[] = [];
   countriesList: any[];
@@ -26,12 +26,7 @@ export class UsersService {
 
 
   getAllUsers() {
-    this.http.get(`${this.rootURL}/Users/GetAllUsers`).subscribe(
-      (response: ListUsers[]) => {
-        this.fromDataList = response;
-      },
-      error => console.log(error)
-    );
+    return this.http.get(`${this.rootURL}/Users/GetAllUsers`);
   }
 
   getUser(ID: number, opc: number){
@@ -39,99 +34,20 @@ export class UsersService {
   }
 
   deleteUserApi(ID: number){
-    Swal.fire({
-      title: 'Are you sure to delete the user?',
-      text: '',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete user!'
-    }).then((result) => {
-      if (result.value) {
-        this.http.delete(`${this.rootURL}/Users/DeleteUser/${ID}`).subscribe(
-          response => {
-            this.getAllUsers();
-          Swal.fire(
-            'Deleted!',
-            'The user was successfully deleted',
-            'success'
-          );
-          },
-          err => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong when deleting the user',
-            });
-          }
-        );
-      }
-    });
+        return this.http.delete(`${this.rootURL}/Users/DeleteUser/${ID}`);
   }
 
   getCountries(){
-    this.http.get('https://restcountries.eu/rest/v2/all').subscribe(
-      (res: any[]) => {
-        this.ArrCountries = res;
-      },
-
-    );
+    return this.http.get('https://restcountries.eu/rest/v2/all');
   }
 
   insertUser(data: User){
 
-    this.http.post(`${this.rootURL}/Users/CreateUser`, data).subscribe(
-      response => {
-        this.getAllUsers();
-          Swal.fire(
-            'The user has been successfully registered!',
-            'success'
-          );
-      },
-      err => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong when registering the user',
-        });
-      }
-    );
+    return this.http.post(`${this.rootURL}/Users/CreateUser`, data);
   }
 
   updateUser(data: User){
-    this.http.put(`${this.rootURL}/Users/UpdateUser`, data).subscribe(
-      response => {
-        this.getAllUsers();
-          Swal.fire(
-            'The user has been successfully updated!',
-            'success'
-          );
-      },
-      error => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong when updated the user',
-        });
-      }
-    );
-
-    /*AXIOS.put(`${this.rootURL}/Users/UpdateUser`, data)
-        .then(data => {
-          this.getAllUsers();
-          Swal.fire(
-            'The user has been successfully updated!',
-            'success'
-          );
-        })
-        .catch(error => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong when updated the user',
-          });
-        });*/
+    return this.http.put(`${this.rootURL}/Users/UpdateUser`, data);
   }
 
   getNameCountry(code: string) {

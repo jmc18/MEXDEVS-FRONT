@@ -5,6 +5,9 @@ import { UsersService } from '../../services/users.service';
 import { Router } from '@angular/router';
 import { DetailUser } from '../../models/detail-user.model';
 
+import Swal from 'sweetalert2';
+import { ListUsers } from '../../models/list-users.model';
+
 
 @Component({
   selector: 'app-users',
@@ -16,10 +19,13 @@ export class UsersComponent implements OnInit {
   titleButton: string;
   typeSubmit: number;
 
+  fromDataList: ListUsers[];
+  ArrCountries: any[];
+
   //Form Register
   userForm: FormGroup;
   submitted = false;
-  modal : NgbModalRef;
+  modal: NgbModalRef;
 
 
  
@@ -27,8 +33,20 @@ export class UsersComponent implements OnInit {
   constructor(private userService: UsersService, private router: Router, private formBuilder: FormBuilder, private modalService: NgbModal) { }
 
   ngOnInit() {
-    this.userService.getAllUsers();
-    this.userService.getCountries();
+    this.userService.getAllUsers()
+    .subscribe(
+      (response: ListUsers[]) => {
+        this.fromDataList = response;
+      },
+      error => console.log(error)
+    );
+    this.userService.getCountries()
+    .subscribe(
+      (res: any[]) => {
+        this.ArrCountries = res;
+      },
+
+    );
     this.userForm = this.formBuilder.group({
       ID: ['0'],
       FirstName: ['', Validators.required],
@@ -71,7 +89,32 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(ID: number){
-    this.userService.deleteUserApi(ID);
+    Swal.fire({
+      title: 'Are you sure to delete the user?',
+      text: '',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete user!'
+    }).then((result) => {
+      if (result.value) {
+        this.userService.deleteUserApi(ID).subscribe(
+          response => {
+            this.userService.getAllUsers()
+            .subscribe(
+              (response: ListUsers[]) => {
+                this.fromDataList = response;
+              },
+              error => console.log(error)
+            );
+          Swal.fire('Deleted!', 'The user was successfully deleted', 'success');
+          },
+          err => {Swal.fire({icon: 'error', title: 'Oops...', text: 'Something went wrong when deleting the user'});
+          }
+        );
+      }
+    });
   }
 
   viewUserDetail(ID: number){
@@ -82,17 +125,45 @@ export class UsersComponent implements OnInit {
 
       onSubmit() {
           this.submitted = true;
-          if (this.userForm.invalid) {
+          if (this.userForm.invalid)
               return;
-          }
 
           if(this.typeSubmit == 1){
-            this.userService.insertUser(this.userForm.value);
-            this.closeModal();
+            this.userService.insertUser(this.userForm.value)
+            .subscribe(
+              response => {
+                this.userService.getAllUsers()
+                .subscribe(
+                  (response: ListUsers[]) => {
+                    this.fromDataList = response;
+                  },
+                  error => console.log(error)
+                );
+                  Swal.fire('The user has been successfully registered!', 'success');
+              },
+              err => {
+                Swal.fire({icon: 'error', title: 'Oops...', text: 'Something went wrong when registering the user'});
+              }
+            );
           } else {
-            this.userService.updateUser(this.userForm.value);
-            this.closeModal();
+            this.userService.updateUser(this.userForm.value)
+            .subscribe(
+              response => {
+                this.userService.getAllUsers()
+                .subscribe(
+                  (response: ListUsers[]) => {
+                    this.fromDataList = response;
+                  },
+                  error => console.log(error)
+                );
+                  Swal.fire('The user has been successfully updated!', 'success');
+              },
+              error => {
+                Swal.fire({icon: 'error', title: 'Oops...', text: 'Something went wrong when updated the user',});
+              }
+            );
           }
+          this.closeModal();
       }
   
       onReset() {

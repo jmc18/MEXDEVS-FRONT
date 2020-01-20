@@ -19,10 +19,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of userService.fromDataList">
+                <tr *ngFor="let item of fromDataList">
                     <td class="hover_pointer" title="View User" (click)="viewUserDetail(item.ID)">{{ item.FullName }}</td>
                     <td>{{ item.Address }}</td>
-                    <td>{{ userService.ArrCountries | nameCountry: item.Country }}</td>
+                    <td>{{ ArrCountries | nameCountry: item.Country }}</td>
                     <td>{{ item.Email }}</td>
                     <td class="text-center">
                         <button title="Edit User" type="button" class="btn btn-sm btn-info" (click)="showFormModal(2, item.ID, content)"><i class="fa fa-pencil"></i></button> |
@@ -79,7 +79,7 @@
                             <label>Country</label>
                             <select formControlName="Country" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.Country.errors }">
                             <option value=""></option>
-                            <option [value]="country.alpha2Code" *ngFor="let country of userService.ArrCountries">{{ country.name }}</option>
+                            <option [value]="country.alpha2Code" *ngFor="let country of ArrCountries">{{ country.name }}</option>
                         </select>
                             <div *ngIf="submitted && f.Country.errors" class="invalid-feedback">
                                 <div *ngIf="f.Country.errors.required">Country is required</div>

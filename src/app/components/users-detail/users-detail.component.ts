@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { DetailUser } from '../../models/detail-user.model';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-users-detail',
   templateUrl: './users-detail.component.html'
