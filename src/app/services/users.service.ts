@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ListUsers} from '../models/list-users.model';
-
-
-import Swal from 'sweetalert2';
-
 
 
 import { DetailUser } from '../models/detail-user.model';
@@ -17,10 +12,6 @@ export class UsersService {
 
   readonly rootURL = 'https://localhost:44358/api';
   
-  fromDataUser: DetailUser;
-  fromCountriesList: any[] = [];
-  countriesList: any[];
-  ArrCountries: any[];
 
   constructor(private http: HttpClient) { }
 
@@ -29,25 +20,24 @@ export class UsersService {
     return this.http.get(`${this.rootURL}/Users/GetAllUsers`);
   }
 
-  getUser(ID: number, opc: number){
+  getUser(ID: number, opc: number) {
     return this.http.get(`${this.rootURL}/Users/GetUser/${ID}/${opc}`);
   }
 
-  deleteUserApi(ID: number){
-        return this.http.delete(`${this.rootURL}/Users/DeleteUser/${ID}`);
+  deleteUserApi(ID: number) {
+    return this.http.delete(`${this.rootURL}/Users/DeleteUser/${ID}`);
+  }
+
+  insertUser(data: User) {
+    return this.http.post(`${this.rootURL}/Users/CreateUser`, data);
+  }
+
+  updateUser(data: User) {
+    return this.http.put(`${this.rootURL}/Users/UpdateUser`, data);
   }
 
   getCountries(){
     return this.http.get('https://restcountries.eu/rest/v2/all');
-  }
-
-  insertUser(data: User){
-
-    return this.http.post(`${this.rootURL}/Users/CreateUser`, data);
-  }
-
-  updateUser(data: User){
-    return this.http.put(`${this.rootURL}/Users/UpdateUser`, data);
   }
 
   getNameCountry(code: string) {
